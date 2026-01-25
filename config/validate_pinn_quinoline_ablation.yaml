@@ -1,0 +1,17 @@
+config_model:
+  model_name: 'pinn_quinoline_ablation_no_encoding'
+  model_version: '0.1'
+  num_inputs: 14
+  num_outputs: 8
+  data_file: 'input_data.xlsx'
+  max_num_delta_t: 128.0
+  env_smoothing_factor: 0.8
+  time_batch_size: 4
+  pinn_inputs: 'time+initials'
+  resume_from: 'checkpoint_best.pt'
+  n_epochs: 0
+  c_scaling_factor: 100.0
+package_mode:
+  task: 'validate'
+  logging_freq: 50
+  adaptive_start_epoch: 100

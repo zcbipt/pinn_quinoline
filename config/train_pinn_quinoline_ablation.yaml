@@ -1,0 +1,93 @@
+config_model:
+  model_name: 'pinn_quinoline_ablation_no_encoding'
+  model_version: '0.1'
+  num_inputs: 14
+  num_outputs: 8
+  data_file: 'input_data.xlsx'
+  max_num_delta_t: 128.0
+  env_smoothing_factor: 0.8
+  time_batch_size: 4
+  pinn_inputs: 'time+initials'
+  resume_from: null
+  n_epochs: 300
+  c_scaling_factor: 100.0
+package_mode:
+  task: 'train'
+  logging_freq: 50
+  adaptive_start_epoch: 100
+
+curriculum_learning:
+  parameter_freezing:
+    phase_transition_epoch: 300
+    frozen_parameters: ['y_E_', 'x_A_', 'z_Delta_H_']
+  
+  weight_update_frequency: 20
+  
+  # GradNorm adaptive weighting parameters
+  gradnorm_alpha: 0.05
+  gradnorm_lr: 0.005
+  
+  # Target relative training rates for different tasks
+  target_rates:
+    data: 0.8
+    pde: 1.2
+    initial: 1.0
+    mass: 0.6
+  
+  # Learning rate configuration
+  learning_rate:
+    warmup_epochs: 20
+    base_lr: 1.0e-4
+    min_lr: 1.0e-5
+    schedule:
+      20: 1.0e-4
+      10000: 4.0e-5
+      20000: 1.0e-5
+  
+  # LBFGS optimizer configuration
+  lbfgs_switch_fraction: 0.8  # Switch to LBFGS at 80% of training
+  lbfgs_params:
+    lr: 1.0e-3
+    max_iter: 20
+    history_size: 10
+    tolerance_grad: 1.0e-12
+    tolerance_change: 1.0e-15
+  
+  initial_weights:
+    train:
+      data: 1.0e2
+      pde: 1.0e1
+      initial: 1.0e3
+      mass: 1.0e1
+    predict:
+      pde: 1.0e1
+      initial: 1.0e3
+      mass: 1.0e1
+  
+  weight_caps:
+    train:
+      data: [1.0e0, 1.0e3]
+      pde: [1.0e-17, 1.0e4]
+      initial: [1.0e-1, 1.0e4]
+      mass: [1.0e-2, 1.0e2]
+    predict:
+      pde: [1.0e-16, 1.0e3]
+      initial: [1.0e-1, 1.0e4]
+      mass: [1.0e-5, 1.0e2]
+  
+  stages:
+    0:
+      data: 1.0e2
+      pde: 1.0e1
+      initial: 1.0e3
+      mass: 1.0e1
+    50:
+      data: 1.0e2
+      pde: 2.0e1
+      initial: 1.0e3
+      mass: 1.0e1
+    100:
+      data: 1.0e2
+      pde: 5.0e1
+      initial: 8.0e2
+      mass: 1.0e1

@@ -144,7 +144,7 @@ def compute_pde_loss(model, c_initial=None, time_points=None, env_pred=None, deb
         reaction_term_B = (k_1 * term_KH_pH * term_KA_CA - k_2 * term_KH_pH * term_KB_CB - k_5 * term_KH_pH * term_KB_CB) / ADS
         reaction_term_C = (k_2 * term_KH_pH * term_KB_CB - k_3 * term_KH_pH * term_KC_CC - k_6 * term_KH_pH * term_KC_CC) / ADS
         reaction_term_D = (k_3 * term_KH_pH * term_KC_CC - k_7 * term_KH_pH * K_D * CD_out) / ADS
-        reaction_term_E = (k_1 * term_KH_pH * term_KA_CA - k_8 * term_KH_pH * K_E * CE_out) / ADS
+        reaction_term_E = (k_4 * term_KH_pH * term_KA_CA - k_8 * term_KH_pH * K_E * CE_out) / ADS
         reaction_term_F = (k_5 * term_KH_pH * term_KB_CB + k_8 * term_KH_pH * K_E * CE_out - k_9 * term_KH_pH * K_F * CF_out) / ADS
         reaction_term_G = (k_6 * term_KH_pH * term_KC_CC + k_9 * term_KH_pH * K_F * CF_out - k_10 * term_KH_pH * K_G * (torch.zeros_like(CG_out) + 1e-10)) / ADS
 
