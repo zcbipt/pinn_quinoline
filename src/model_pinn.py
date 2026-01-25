@@ -547,18 +547,11 @@ class PINN(nn.Module):
                 t_batch = torch.ones(batch_size, 1, dtype=torch.float64, device=self.device) * t
                 t_batch.requires_grad_(True)
 
-                # ----TRICK: Environment Parameter Smoothing-----
-                # For pinn mode, use initial values without phase model
-                pH_raw = pH_initial
+                pH_current = current_pH
+                FL_current = current_FL
+                VV_current = current_VV
+                CS_current = current_CS
 
-                smoothing_factor = self.env_smoothing_factor
-                pH_current = smoothing_factor * current_pH + (1 - smoothing_factor) * pH_raw
-                FL_current = current_FL  # Keep constant for pinn mode
-                VV_current = current_VV  # Keep constant for pinn mode
-                CS_current = current_CS  # Keep constant for pinn mode
-                # -----End of TRICK-----
-
-                # For pinn mode, keep Y values constant
                 YA_current = current_YA
                 YB_current = current_YB
                 YC_current = current_YC
@@ -727,7 +720,7 @@ class PINN(nn.Module):
         with torch.no_grad():
             batch_size = input_features.shape[0]
 
-            # -----Run phase model on initial conditions to get initial C* values-----
+            # -----Get initial C* values-----
             c_initial, env_dict = self.preprocess_initial_inputs(x=input_features)
 
             c_initial = torch.cat([
